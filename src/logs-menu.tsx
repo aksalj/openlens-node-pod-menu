@@ -8,7 +8,7 @@ import { Renderer, Common } from "@k8slens/extensions";
 
 type Pod = Renderer.K8sApi.Pod;
 type IPodContainer = Renderer.K8sApi.IPodContainer;
-type Workload = Renderer.K8sApi.StatefulSet | Renderer.K8sApi.Deployment | Renderer.K8sApi.DaemonSet
+type Workload = Renderer.K8sApi.StatefulSet | Renderer.K8sApi.Deployment | Renderer.K8sApi.DaemonSet;
 
 const {
   Component: {
@@ -88,13 +88,17 @@ export class PodLogsMenu extends React.Component<Renderer.Component.KubeObjectMe
 }
 
 export class WorkloadLogsMenu extends React.Component<Renderer.Component.KubeObjectMenuProps<Workload>> {
-  showLogs(kubetailPath: string) {
+  showLogs() {
+    Navigation.hideDetails();
     const { object: workload } = this.props;
 
+    const kubectlPath = App.Preferences.getKubectlPath() || "kubectl";
     const commandParts = [
-      kubetailPath,
+      kubectlPath,
+      "logs",
       "-n", workload.getNs(),
-      workload.getName()
+      "--all-containers=true",
+      "-f", `${workload.kind.toLocaleLowerCase()}/${workload.getName()}`,
     ];
 
     if (window.navigator.platform !== "Win32") {
@@ -102,22 +106,19 @@ export class WorkloadLogsMenu extends React.Component<Renderer.Component.KubeObj
     }
 
     const shell = createTerminalTab({
-      title: `${workload.kind}: ${workload.getName()} (namespace: ${workload.getNs()}) [Tailed]`,
+      title: `${workload.kind}: ${workload.getName()} (namespace: ${workload.getNs()}) [Logs]`,
     });
 
     terminalStore.sendCommand(commandParts.join(" "), {
       enter: true,
       tabId: shell.id,
     });
-
-    Navigation.hideDetails();
   }
 
   render() {
     const { object: workload, toolbar } = this.props;
-    const kubetailPath = 'kubetail'; // TODO: Check if exists, if not, hide/warn
     return (
-      <MenuItem onClick={Util.prevDefault(() => this.showLogs(kubetailPath))}>
+      <MenuItem onClick={Util.prevDefault(() => this.showLogs())}>
         <Icon
           material="subject"
           interactive={toolbar}

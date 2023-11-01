@@ -42,21 +42,21 @@ export default class PodMenuRendererExtension extends Renderer.LensExtension {
     },
     {
       kind: "Deployment",
-      apiVersions: ["v1"],
+      apiVersions: ["apps/v1"],
       components: {
         MenuItem: (props: Renderer.Component.KubeObjectMenuProps<Renderer.K8sApi.Deployment>) => <WorkloadLogsMenu {...props} />,
       },
     },
     {
       kind: "StatefulSet",
-      apiVersions: ["v1"],
+      apiVersions: ["apps/v1"],
       components: {
         MenuItem: (props: Renderer.Component.KubeObjectMenuProps<Renderer.K8sApi.StatefulSet>) => <WorkloadLogsMenu {...props} />,
       },
     },
     {
       kind: "DaemonSet",
-      apiVersions: ["v1"],
+      apiVersions: ["apps/v1"],
       components: {
         MenuItem: (props: Renderer.Component.KubeObjectMenuProps<Renderer.K8sApi.DaemonSet>) => <WorkloadLogsMenu {...props} />,
       },
