@@ -7,7 +7,7 @@ import { Renderer } from "@k8slens/extensions";
 import { NodeMenu } from "./src/node-menu";
 import { PodAttachMenu } from "./src/attach-menu";
 import { PodShellMenu } from "./src/shell-menu";
-import { PodLogsMenu } from "./src/logs-menu";
+import { PodLogsMenu, WorkloadLogsMenu } from "./src/logs-menu";
 import React from "react";
 
 export default class PodMenuRendererExtension extends Renderer.LensExtension {
@@ -38,6 +38,27 @@ export default class PodMenuRendererExtension extends Renderer.LensExtension {
       apiVersions: ["v1"],
       components: {
         MenuItem: (props: Renderer.Component.KubeObjectMenuProps<Renderer.K8sApi.Pod>) => <PodLogsMenu {...props} />,
+      },
+    },
+    {
+      kind: "Deployment",
+      apiVersions: ["v1"],
+      components: {
+        MenuItem: (props: Renderer.Component.KubeObjectMenuProps<Renderer.K8sApi.Deployment>) => <WorkloadLogsMenu {...props} />,
+      },
+    },
+    {
+      kind: "StatefulSet",
+      apiVersions: ["v1"],
+      components: {
+        MenuItem: (props: Renderer.Component.KubeObjectMenuProps<Renderer.K8sApi.StatefulSet>) => <WorkloadLogsMenu {...props} />,
+      },
+    },
+    {
+      kind: "DaemonSet",
+      apiVersions: ["v1"],
+      components: {
+        MenuItem: (props: Renderer.Component.KubeObjectMenuProps<Renderer.K8sApi.DaemonSet>) => <WorkloadLogsMenu {...props} />,
       },
     },
   ];
